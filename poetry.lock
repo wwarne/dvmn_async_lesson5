@@ -1,0 +1,41 @@
+[[package]]
+category = "main"
+description = "File support for asyncio."
+name = "aiofiles"
+optional = false
+python-versions = "*"
+version = "0.4.0"
+
+[[package]]
+category = "main"
+description = "Manage background asyncio tasks"
+name = "aionursery"
+optional = false
+python-versions = ">=3.5,<4.0"
+version = "0.3.0"
+
+[[package]]
+category = "main"
+description = "Timeout context manager for asyncio programs"
+name = "async-timeout"
+optional = false
+python-versions = ">=3.5.3"
+version = "3.0.1"
+
+[metadata]
+content-hash = "4d0b9edac316a5f9f9ab0b0af88a72c321094170603df36527219e6903f77128"
+python-versions = "^3.7"
+
+[metadata.files]
+aiofiles = [
+    {file = "aiofiles-0.4.0-py3-none-any.whl", hash = "sha256:1e644c2573f953664368de28d2aa4c89dfd64550429d0c27c4680ccd3aa4985d"},
+    {file = "aiofiles-0.4.0.tar.gz", hash = "sha256:021ea0ba314a86027c166ecc4b4c07f2d40fc0f4b3a950d1868a0f2571c2bbee"},
+]
+aionursery = [
+    {file = "aionursery-0.3.0-py3-none-any.whl", hash = "sha256:bc6953501add61dd0e24b1755a645dfbccd904c2737b6fce4e28f3294bab88d0"},
+    {file = "aionursery-0.3.0.tar.gz", hash = "sha256:0836d9863393cfe68a18e91c6a00af788960cb40207a1f19105270012f4e08ce"},
+]
+async-timeout = [
+    {file = "async-timeout-3.0.1.tar.gz", hash = "sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f"},
+    {file = "async_timeout-3.0.1-py3-none-any.whl", hash = "sha256:4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3"},
+]
