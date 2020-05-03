@@ -1,11 +1,12 @@
+import asyncio
 import contextlib
-from typing import AsyncGenerator, Tuple, TypeVar, Type
-
 import logging
 import socket
-import async_timeout
-import asyncio
 from asyncio.streams import StreamReader, StreamWriter
+from typing import AsyncGenerator, Tuple, TypeVar, Type
+
+import async_timeout
+
 from gui import (
     ReadConnectionStateChanged,
     SendingConnectionStateChanged,
@@ -15,7 +16,7 @@ from gui import (
 
 def sanitize_message(message: str) -> str:
     """
-    Clears message fro, the new line symbols.
+    Clears message from the new line symbols.
 
     New line symbol means an end of the message as stated in
     the chat protocol specifications.
