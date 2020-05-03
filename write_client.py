@@ -26,7 +26,7 @@ async def authenticate(
         raise UnknownError('Не удалось обработать ответ сервера')
     else:
         if account_info is None:
-            raise InvalidToken('Неверный токен')
+            raise InvalidToken('Неверный токен', 'Проверьте токен, сервер его не узнал')
         await watchdog_queue.put('Authenticated')
         return account_info
 
