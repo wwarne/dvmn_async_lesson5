@@ -1,92 +1,92 @@
 # Lesson 05 - Minecraft undeground chat
 
-Chat client with graphical interface for a secret chat of professional players.
+![][usa_flag] [For english version press here](../README_EN.md)
 
-Some features:
+Клиент чата майнкрафтеров с графическим интерфейсом.
 
-* GUI for register a new user in a chat.
-* Saving chat history into a file
+Некоторые возможности:
 
-
-# Requirements
-
-* python 3.7+ is recommended
-* [Poetry](https://poetry.eustace.io/) for dependency management. 
-
-# How to use
+* Графический интерфейс для регистрации нового пользователя.
+* История сообщений чата сохраняется в файле.
 
 
-## Install dependencies
+# Требования для запуска
+
+* Рекомендуемая версия интерпритатора - python 3.7+
+* [Poetry](https://poetry.eustace.io/) для управления зависимостями. 
+
+# Как пользоваться
+
+
+## Установка зависимостей
 
 ```bash
 $ poetry install
 ```
-### Run chat command
+### Запуск команд с помощью poetry
 
-To run commands you can either activate virtual environment via running ```poetry shell```
-or run every command as ```poetry run command_to_run```. It's up to you. 
+Способо 1: Активировать виртуальное окружение командой ```poetry shell``` и далее запускать команды.
 
+Способ 2: Запускать каждую команду как ```poetry run команда, которую хотите запустить```.
 
-### Registration in a chat
+Как удобнее - решать вам.
 
-Before using a chat you need a token. To register an account just run 
+### Регистрация в чате
+
+Перед использованием чата необходимо получить токен доступа, для этого запустите
 
 ```bash
 python register.py
 ```
 
-Your token will be saved in a `my-token.txt` file or you can copy it and pass via chat client parameters.
+Полученный токен будет сохранён в файле `my-token.txt` или вы можете скопировать его и передать в программу в качестве параметра.
 
 
 ![Successfull registration][registration]
 
 
-## Working with chat
+## Работа с чатом
 
-To run the chat use ```python main.py```. 
-
-
-### Passing your chat token
-
-You can provide your chat token with many different ways:
-
-* Save it in file `my-token.txt`
-* Save it into env variable `MINECHAT_TOKEN`
-* Pass it as a command-line parameter ```python manage.py --token=```
-
-Env variable have priority over file, and command line parameter have the highest priority of all.
+Чтобы запустить клиент чата введите команду ```python main.py```. 
 
 
-### Chat settings
+### Как передать ваш токен для аутентификации
 
-You can pass settings as environmental variables or as command line parameters.
-If you pass some parameter with both methods - command line parameter be used.
+Токен можно передать разными способами:
+
+* Сохранить его в файле `my-token.txt`, при запуске он будет прочитан оттуда.
+* Сохранить его в переменную окружения `MINECHAT_TOKEN`
+* Передать как параметр командной строки ```python manage.py --token=```
+
+Переменная окружения имеет более высокий приоритет, чем файл ```my-token.txt```, 
+а параметр командной строки - более высокий приоритет, чем переменная окружения.
+
+
+### Настройки чата
+
+Вы можете передавать параметры чата как переменные окружения или как параметры командной строки.
+Параметры командной строки имеют более высокий приоритет.
 
 
 | env parameter |  command-line parameter | default value |  description  |
 |---|---|---|---|
-| MINECHAT_READ_HOST  | --read_host  | minechat.dvmn.org  | Chat address for reading (ip or host name)  |
-| MINECHAT_READ_PORT  | --read_port  | 5000  | Port number of read server |
-| MINECHAT_WRITE_HOST  | --write_host  | minechat.dvmn.org  | Chat address for writing (ip or host name)  |
-| MINECHAT_WRITE_PORT  | --write_port  | 5050  | Port number of a write server |
-| MINECHAT_HISTORY_PATH  | --history_path  | minechat.history  | Path to a file with chat history  |
-| MINECHAT_TOKEN  | --token  |   | Token to authenticate in chat |
-| MINECHAT_LOGLEVEL  | --loglevel  | INFO  | Level of logging |
+| MINECHAT_READ_HOST  | --read_host  | minechat.dvmn.org  | Адрес сервера чата для чтения (ip или доменное имя)  |
+| MINECHAT_READ_PORT  | --read_port  | 5000  | Порт чата для чтения сообщений |
+| MINECHAT_WRITE_HOST  | --write_host  | minechat.dvmn.org  | Адрес сервера чата для записи (ip или доменное имя)  |
+| MINECHAT_WRITE_PORT  | --write_port  | 5050  | Порт чата для отправки сообщений |
+| MINECHAT_HISTORY_PATH  | --history_path  | minechat.history  | Путь к файлу с историей чата  |
+| MINECHAT_TOKEN  | --token  |   | Токен для аутентификации |
+| MINECHAT_LOGLEVEL  | --loglevel  | INFO  | Уровень детальности логов |
 
-
-### Using chat
-
-```bash
-$ python main.py
-```
 
 ![Chat client is running][chat_window]
 
 
-# Project Goals
+# Цели проекта
 
-The code is written for educational purposes.
+Код написан в образовательных целях.
 
 
 [registration]: readme_pics/registration.png "Registration window"
 [chat_window]: readme_pics/chat.png "Chat in work"
+[usa_flag]: readme_pics/usa_icon.png "USA flag"
