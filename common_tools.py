@@ -2,6 +2,7 @@ import contextlib
 from typing import AsyncGenerator, Tuple, TypeVar, Type
 
 import logging
+import socket
 import async_timeout
 import asyncio
 from asyncio.streams import StreamReader, StreamWriter
@@ -54,7 +55,7 @@ async def connect(
     try:
         async with async_timeout.timeout(timeout):
             reader, writer = await asyncio.open_connection(host, port)
-    except (asyncio.TimeoutError, ConnectionRefusedError):
+    except (asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror):
         raise ConnectionError
     await status_update_queue.put(gui_state_class.ESTABLISHED)
     try:
