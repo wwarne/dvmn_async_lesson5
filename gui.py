@@ -1,9 +1,9 @@
-import tkinter as tk
 import asyncio
-from tkinter.scrolledtext import ScrolledText
+import tkinter as tk
 from enum import Enum
+from tkinter.scrolledtext import ScrolledText
 
-from helpers import create_handy_nursery
+from nursery_helper import create_handy_nursery
 
 
 class TkAppClosed(Exception):

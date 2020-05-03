@@ -1,6 +1,8 @@
 import asyncio
+
 from common_tools import connect, read_line_from_chat
 from gui import ReadConnectionStateChanged
+
 
 async def read_messages(
         host: str,

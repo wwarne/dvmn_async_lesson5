@@ -4,6 +4,7 @@ import aiofiles
 
 from exceptions import MinechatException
 
+
 async def history_restore(
         path: str,
         messages_queue: asyncio.Queue,
