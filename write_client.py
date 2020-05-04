@@ -4,10 +4,11 @@ import logging
 from asyncio.streams import StreamReader, StreamWriter
 from typing import Dict
 
+from anyio import create_task_group
+
 import gui
 from common_tools import connect, write_line_to_chat, read_line_from_chat
 from exceptions import InvalidToken, UnknownError, MinechatException
-from anyio import create_task_group
 
 
 async def authenticate(
@@ -17,7 +18,7 @@ async def authenticate(
         watchdog_queue: asyncio.Queue
 ) -> Dict[str, str]:
     """Authenticate user by token."""
-    greetings = await read_line_from_chat(reader)
+    await read_line_from_chat(reader)
     await watchdog_queue.put('Greetings before authentication')
     await write_line_to_chat(writer, access_token)
     response = await read_line_from_chat(reader)
@@ -39,9 +40,9 @@ async def register(
         log_queue: asyncio.Queue,
 ) -> None:
     """New user registration."""
-    greetings = await read_line_from_chat(reader)
+    await read_line_from_chat(reader)
     await write_line_to_chat(writer, '')  # say 'we don't have a token'
-    ask_for_nickname = await read_line_from_chat(reader)
+    await read_line_from_chat(reader)  # ask_for_nickname
     await write_line_to_chat(writer, nickname)
     response_content = await read_line_from_chat(reader)
     if not response_content:
@@ -65,7 +66,7 @@ async def send_user_messages(
         await write_line_to_chat(writer, message)
         # message doesn't appear in the chat if only one `\n` used
         await write_line_to_chat(writer, '')
-        await watchdog_queue.put('Message has sent')
+        await watchdog_queue.put('Message has been sent')
 
 
 async def send_healthcheck_messages(
@@ -86,7 +87,7 @@ async def read_healthcheck_messages(
     """Reads server responses to healthcheck messages."""
     while True:
         new_line = await reader.readline()
-        # note - readline returns empty string hundreds times per second then server connection is down.
+        # note - readline() returns empty string hundreds times per second then server connection breaks.
         # sleep here is to prevent eventloop blocking and 100% cpu load.
         if new_line == b'':
             await asyncio.sleep(0)

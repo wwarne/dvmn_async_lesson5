@@ -3,11 +3,11 @@ import logging
 import socket
 
 import async_timeout
+from anyio import create_task_group
+from anyio.exceptions import ExceptionGroup
 
 from read_client import read_messages
 from write_client import send_messages
-from anyio import create_task_group
-from anyio.exceptions import ExceptionGroup
 
 watchdog_logger = logging.getLogger('watchdog')
 
@@ -66,10 +66,8 @@ async def handle_connection(
                                         2,
                                         )
             except socket.gaierror:
-                logging.error('SOCKER GAIERROR IN handle_connection')
                 raise ConnectionError
             except ExceptionGroup as multi_e:
-                logging.error('ExceptionGroup IN handle_connection')
                 for error in multi_e.exceptions:
                     if isinstance(error, (socket.gaierror, ConnectionError)):
                         raise ConnectionError
