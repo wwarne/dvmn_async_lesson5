@@ -25,7 +25,7 @@ async def read_messages(
             new_message = await read_line_from_chat(reader)
             if not new_message:
                 # Got an empty message. Usually it happens because of connection problems.
-                break
+                continue
             await watchdog_queue.put('New message in chat')
             await messages_queue.put(new_message)
             await history_queue.put(new_message)
