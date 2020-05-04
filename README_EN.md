@@ -62,7 +62,10 @@ Env variable have priority over file, and command line parameter have the highes
 ### Chat settings
 
 You can pass settings as environmental variables or as command line parameters.
+
 If you pass some parameter with both methods - command line parameter be used.
+
+You can change default parametesrs by edit `defaults.py` file.
 
 
 | env parameter |  command-line parameter | default value |  description  |
