@@ -24,7 +24,7 @@ async def watch_for_connection(
             watchdog_logger.info(f'{timeout} s timeout is elapsed.')
             raise ConnectionError
         else:
-            watchdog_logger.info(f'{event}')
+            watchdog_logger.info(f'Connection is alive. {event}')
 
 
 async def handle_connection(
@@ -66,14 +66,16 @@ async def handle_connection(
                                         2,
                                         )
             except socket.gaierror:
+                logging.error('SOCKER GAIERROR IN handle_connection')
                 raise ConnectionError
             except ExceptionGroup as multi_e:
+                logging.error('ExceptionGroup IN handle_connection')
                 for error in multi_e.exceptions:
                     if isinstance(error, (socket.gaierror, ConnectionError)):
                         raise ConnectionError
                 raise
         except ConnectionError:
-            logging.info(f'Connection error, reconnect in {reconnect_delay} sec.')
+            watchdog_logger.info(f'Connection error, reconnect in {reconnect_delay} sec.')
             await asyncio.sleep(reconnect_delay)
         else:
             return

@@ -85,7 +85,13 @@ async def read_healthcheck_messages(
 ) -> None:
     """Reads server responses to healthcheck messages."""
     while True:
-        await reader.readline()
+        new_line = await reader.readline()
+        # note - readline returns empty string hundreds times per second then server connection is down.
+        # sleep here is to prevent eventloop blocking and 100% cpu load.
+        if new_line == b'':
+            await asyncio.sleep(0)
+            continue
+        logging.info(f'new_line {new_line}')
         await watchdog_queue.put('Healthcheck message')
 
 
