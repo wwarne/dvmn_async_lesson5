@@ -28,7 +28,7 @@ async def history_save(
             while True:
                 message = await history_queue.get()
                 await f.write(f'{message}\n')
-    except PermissionError as e:
+    except PermissionError:
         raise MinechatException(
             title='Не удаётся открыть файл',
             message=f'Не могу открыть файл {path} для записи истории.',
