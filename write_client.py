@@ -91,7 +91,6 @@ async def read_healthcheck_messages(
         if new_line == b'':
             await asyncio.sleep(0)
             continue
-        logging.info(f'new_line {new_line}')
         await watchdog_queue.put('Healthcheck message')
 
 
