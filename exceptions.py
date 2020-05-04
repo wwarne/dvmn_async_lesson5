@@ -5,7 +5,7 @@ class MinechatException(Exception):
     def __init__(self, title: str, message: Optional[str] = '') -> None:
         self.title = title
         self.message = message
-        super().__init__(message)
+        super().__init__(title)
 
 
 class InvalidToken(MinechatException):

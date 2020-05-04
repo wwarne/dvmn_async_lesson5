@@ -60,7 +60,7 @@ async def run_chat_internals(
 
 
 def run_chat() -> None:
-    """Entry point to start the application."""
+    """Entry point to setup and start the application."""
     total_settings = read_settings()
     logger_dict_config = get_logging_settings(total_settings['loglevel'])
     logging.config.dictConfig(logger_dict_config)
