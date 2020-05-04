@@ -2,12 +2,12 @@ import asyncio
 import logging
 import socket
 
-import aionursery
 import async_timeout
 
-from nursery_helper import create_handy_nursery
 from read_client import read_messages
 from write_client import send_messages
+from anyio import create_task_group
+from anyio.exceptions import ExceptionGroup
 
 watchdog_logger = logging.getLogger('watchdog')
 
@@ -44,36 +44,30 @@ async def handle_connection(
     while True:
         try:
             try:
-                async with create_handy_nursery() as nursery:
-                    nursery.start_soon(
-                        read_messages(
-                            host=reader_host,
-                            port=reader_port,
-                            status_update_queue=status_update_queue,
-                            messages_queue=messages_queue,
-                            history_queue=history_queue,
-                            watchdog_queue=watchdog_queue,
-                        )
-                    )
-                    nursery.start_soon(
-                        send_messages(
-                            host=writer_host,
-                            port=writer_port,
-                            access_token=access_token,
-                            status_update_queue=status_update_queue,
-                            sending_queue=sending_queue,
-                            watchdog_queue=watchdog_queue,
-                        )
-                    )
-                    nursery.start_soon(
-                        watch_for_connection(
-                            watchdog_queue=watchdog_queue,
-                            timeout=2,
-                        )
-                    )
+                async with create_task_group() as nursery:
+                    await nursery.spawn(read_messages,
+                                        reader_host,
+                                        reader_port,
+                                        status_update_queue,
+                                        messages_queue,
+                                        history_queue,
+                                        watchdog_queue
+                                        )
+                    await nursery.spawn(send_messages,
+                                        writer_host,
+                                        writer_port,
+                                        access_token,
+                                        status_update_queue,
+                                        sending_queue,
+                                        watchdog_queue,
+                                        )
+                    await nursery.spawn(watch_for_connection,
+                                        watchdog_queue,
+                                        2,
+                                        )
             except socket.gaierror:
                 raise ConnectionError
-            except aionursery.MultiError as multi_e:
+            except ExceptionGroup as multi_e:
                 for error in multi_e.exceptions:
                     if isinstance(error, (socket.gaierror, ConnectionError)):
                         raise ConnectionError

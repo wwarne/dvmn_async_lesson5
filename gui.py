@@ -3,7 +3,7 @@ import tkinter as tk
 from enum import Enum
 from tkinter.scrolledtext import ScrolledText
 
-from nursery_helper import create_handy_nursery
+from anyio import create_task_group
 
 
 class TkAppClosed(Exception):
@@ -126,7 +126,7 @@ async def draw(messages_queue, sending_queue, status_updates_queue):
     conversation_panel = ScrolledText(root_frame, wrap='none')
     conversation_panel.pack(side="top", fill="both", expand=True)
 
-    async with create_handy_nursery() as nursery:
-        nursery.start_soon(update_tk(root_frame))
-        nursery.start_soon(update_conversation_history(conversation_panel, messages_queue))
-        nursery.start_soon(update_status_panel(status_labels, status_updates_queue))
+    async with create_task_group() as nursery:
+        await nursery.spawn(update_tk, root_frame)
+        await nursery.spawn(update_conversation_history, conversation_panel, messages_queue)
+        await nursery.spawn(update_status_panel, status_labels, status_updates_queue)

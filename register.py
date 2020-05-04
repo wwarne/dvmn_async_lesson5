@@ -8,7 +8,7 @@ import defaults
 from common_tools import connect
 from exceptions import MinechatException
 from gui import TkAppClosed, update_tk, SendingConnectionStateChanged
-from nursery_helper import create_handy_nursery
+from anyio import create_task_group
 from write_client import register
 
 
@@ -148,26 +148,18 @@ async def draw(
 
     reg_button['command'] = lambda: start_register(address_field, nickname_field, events_queue)
 
-    async with create_handy_nursery() as nursery:
-        nursery.start_soon(
-            update_tk(root)
-        )
-        nursery.start_soon(
-            watch_register(events_queue, log_queue, result_token_field)
-        )
-        nursery.start_soon(
-            show_log(log_queue, log_text_area)
-        )
+    async with create_task_group() as nursery:
+        await nursery.spawn(update_tk, root)
+        await nursery.spawn(watch_register, events_queue, log_queue, result_token_field)
+        await nursery.spawn(show_log, log_queue, log_text_area)
 
 
 async def main() -> None:
     events_queue = asyncio.Queue()
     log_queue = asyncio.Queue()
     try:
-        async with create_handy_nursery() as nursery:
-            nursery.start_soon(
-                draw(events_queue, log_queue)
-            )
+        async with create_task_group() as nursery:
+            await nursery.spawn(draw, events_queue, log_queue)
     except TkAppClosed:
         pass
 

@@ -7,7 +7,7 @@ from typing import Dict
 import gui
 from common_tools import connect, write_line_to_chat, read_line_from_chat
 from exceptions import InvalidToken, UnknownError, MinechatException
-from nursery_helper import create_handy_nursery
+from anyio import create_task_group
 
 
 async def authenticate(
@@ -114,13 +114,7 @@ async def send_messages(
             watchdog_queue,
         )
         await status_update_queue.put(gui.NicknameReceived(account_info['nickname']))
-        async with create_handy_nursery() as nursery:
-            nursery.start_soon(
-                send_user_messages(writer, sending_queue, watchdog_queue)
-            )
-            nursery.start_soon(
-                send_healthcheck_messages(writer, 1)
-            )
-            nursery.start_soon(
-                read_healthcheck_messages(reader, watchdog_queue)
-            )
+        async with create_task_group() as nursery:
+            await nursery.spawn(send_user_messages, writer, sending_queue, watchdog_queue)
+            await nursery.spawn(send_healthcheck_messages, writer, 1)
+            await nursery.spawn(read_healthcheck_messages, reader, watchdog_queue)
