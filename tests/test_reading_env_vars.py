@@ -39,7 +39,7 @@ class TestReadEnv:
         assert results['history_path'] == 'history.txt'
 
     def test_token(self, monkeypatch):
-        monkeypatch.setenv('MINECHAT_WRITE_TOKEN', 'some-token')
+        monkeypatch.setenv('MINECHAT_TOKEN', 'some-token')
         results = read_from_environment()
         assert results['token'] == 'some-token'
 
