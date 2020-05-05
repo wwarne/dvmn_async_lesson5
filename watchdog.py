@@ -15,7 +15,7 @@ async def watch_for_connection(
         watchdog_queue: asyncio.Queue,
         timeout: float = 2,
 ):
-    """Raises exception if it seems connection is down."""
+    """Raises exception if it seems that connection is down."""
     while True:
         try:
             async with async_timeout.timeout(timeout) as cm:
@@ -44,27 +44,27 @@ async def handle_connection(
     while True:
         try:
             try:
-                async with create_task_group() as nursery:
-                    await nursery.spawn(read_messages,
-                                        reader_host,
-                                        reader_port,
-                                        status_update_queue,
-                                        messages_queue,
-                                        history_queue,
-                                        watchdog_queue
-                                        )
-                    await nursery.spawn(send_messages,
-                                        writer_host,
-                                        writer_port,
-                                        access_token,
-                                        status_update_queue,
-                                        sending_queue,
-                                        watchdog_queue,
-                                        )
-                    await nursery.spawn(watch_for_connection,
-                                        watchdog_queue,
-                                        2,
-                                        )
+                async with create_task_group() as tg:
+                    await tg.spawn(read_messages,
+                                   reader_host,
+                                   reader_port,
+                                   status_update_queue,
+                                   messages_queue,
+                                   history_queue,
+                                   watchdog_queue
+                                   )
+                    await tg.spawn(send_messages,
+                                   writer_host,
+                                   writer_port,
+                                   access_token,
+                                   status_update_queue,
+                                   sending_queue,
+                                   watchdog_queue,
+                                   )
+                    await tg.spawn(watch_for_connection,
+                                   watchdog_queue,
+                                   2,
+                                   )
             except socket.gaierror:
                 raise ConnectionError
             except ExceptionGroup as multi_e:
