@@ -37,7 +37,6 @@ async def register(
         reader: StreamReader,
         writer: StreamWriter,
         nickname: str,
-        log_queue: asyncio.Queue,
 ) -> None:
     """New user registration."""
     await read_line_from_chat(reader)
@@ -87,7 +86,7 @@ async def read_healthcheck_messages(
     """Reads server responses to healthcheck messages."""
     while True:
         new_line = await reader.readline()
-        # note - readline() returns empty string hundreds times per second then server connection breaks.
+        # note - readline() returns an empty string hundreds times per second then connection to server breaks.
         # sleep here is to prevent eventloop blocking and 100% cpu load.
         if new_line == b'':
             await asyncio.sleep(0)
@@ -120,7 +119,7 @@ async def send_messages(
             watchdog_queue,
         )
         await status_update_queue.put(gui.NicknameReceived(account_info['nickname']))
-        async with create_task_group() as nursery:
-            await nursery.spawn(send_user_messages, writer, sending_queue, watchdog_queue)
-            await nursery.spawn(send_healthcheck_messages, writer, 1)
-            await nursery.spawn(read_healthcheck_messages, reader, watchdog_queue)
+        async with create_task_group() as tg:
+            await tg.spawn(send_user_messages, writer, sending_queue, watchdog_queue)
+            await tg.spawn(send_healthcheck_messages, writer, 1)
+            await tg.spawn(read_healthcheck_messages, reader, watchdog_queue)
