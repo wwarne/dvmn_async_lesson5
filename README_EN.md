@@ -1,6 +1,6 @@
 # Lesson 05 - Minecraft undeground chat
 
-![][russia_flag] [Для версии на русском нажмите здесь](../README.md)
+![][russia_flag] [Для версии на русском нажмите здесь](./README.md)
 
 Chat client with graphical interface for a secret chat of professional players.
 
@@ -95,4 +95,4 @@ The code is written for educational purposes.
 
 [registration]: readme_pics/registration.png "Registration window"
 [chat_window]: readme_pics/chat.png "Chat in work"
-[russia_flag]: readme_pics/russia_icon.png.png "Russia flag"
+[russia_flag]: readme_pics/russia_icon.png "Russia flag"
