@@ -1,7 +1,9 @@
-import tkinter as tk
 import asyncio
-from tkinter.scrolledtext import ScrolledText
+import tkinter as tk
 from enum import Enum
+from tkinter.scrolledtext import ScrolledText
+
+from anyio import create_task_group
 
 
 class TkAppClosed(Exception):
@@ -47,7 +49,7 @@ async def update_tk(root_frame, interval=1 / 120):
         await asyncio.sleep(interval)
 
 
-async def update_conversation_history(panel, messages_queue):
+async def update_conversation_history(panel: ScrolledText, messages_queue):
     while True:
         msg = await messages_queue.get()
 
@@ -55,10 +57,8 @@ async def update_conversation_history(panel, messages_queue):
         if panel.index('end-1c') != '1.0':
             panel.insert('end', '\n')
         panel.insert('end', msg)
-        # TODO сделать промотку умной, чтобы не мешала просматривать историю сообщений
-        # ScrolledText.frame
-        # ScrolledText.vbar
-        panel.yview(tk.END)
+        if panel.vbar.get()[1] == 1.0:
+            panel.yview(tk.END)
         panel['state'] = 'disabled'
 
 
@@ -126,8 +126,7 @@ async def draw(messages_queue, sending_queue, status_updates_queue):
     conversation_panel = ScrolledText(root_frame, wrap='none')
     conversation_panel.pack(side="top", fill="both", expand=True)
 
-    await asyncio.gather(
-        update_tk(root_frame),
-        update_conversation_history(conversation_panel, messages_queue),
-        update_status_panel(status_labels, status_updates_queue)
-    )
+    async with create_task_group() as nursery:
+        await nursery.spawn(update_tk, root_frame)
+        await nursery.spawn(update_conversation_history, conversation_panel, messages_queue)
+        await nursery.spawn(update_status_panel, status_labels, status_updates_queue)
