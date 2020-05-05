@@ -3,12 +3,12 @@ import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 
 import aiofiles
+from anyio import create_task_group
 
 import defaults
 from common_tools import connect
 from exceptions import MinechatException
 from gui import TkAppClosed, update_tk, SendingConnectionStateChanged
-from anyio import create_task_group
 from write_client import register
 
 
@@ -45,6 +45,7 @@ async def write_token_to_file(
         token: str,
         filepath: str
 ) -> bool:
+    """Writes token into a file and returns a success status."""
     try:
         async with aiofiles.open(filepath, 'w', encoding='utf-8') as f:
             await f.write(token)
@@ -148,13 +149,14 @@ async def draw(
 
     reg_button['command'] = lambda: start_register(address_field, nickname_field, events_queue)
 
-    async with create_task_group() as nursery:
-        await nursery.spawn(update_tk, root)
-        await nursery.spawn(watch_register, events_queue, log_queue, result_token_field)
-        await nursery.spawn(show_log, log_queue, log_text_area)
+    async with create_task_group() as tg:
+        await tg.spawn(update_tk, root)
+        await tg.spawn(watch_register, events_queue, log_queue, result_token_field)
+        await tg.spawn(show_log, log_queue, log_text_area)
 
 
 async def main() -> None:
+    """Starting point to run register programm."""
     events_queue = asyncio.Queue()
     log_queue = asyncio.Queue()
     try:
