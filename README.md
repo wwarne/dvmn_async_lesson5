@@ -1,6 +1,6 @@
 # Lesson 05 - Minecraft undeground chat
 
-![][usa_flag] [For english version press here](../README_EN.md)
+![][usa_flag] [For english version press here](./README_EN.md)
 
 Клиент чата майнкрафтеров с графическим интерфейсом.
 
