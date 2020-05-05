@@ -8,7 +8,7 @@ import defaults
 def create_parser() -> argparse.ArgumentParser:
     """Creates a parser to process command line arguments."""
     parser = argparse.ArgumentParser('Minechat chat client')
-    parser.add_argument('--loglevel', type=str, choices=('DEBUG', 'INFO', 'WARNING', 'ERROR'),
+    parser.add_argument('--loglevel', type=str, choices=defaults.POSSIBLE_LOGLEVELS,
                         help='Logging level', required=False)
     group_reader = parser.add_argument_group('Chat reader settings')
     group_reader.add_argument('--read-host', type=str, help='Chat address')
@@ -63,6 +63,9 @@ def read_from_environment() -> Dict[str, Union[str, int]]:
         write_port = int(write_port)
     except (TypeError, ValueError):
         write_port = None
+
+    loglevel = os.getenv('MINECHAT_LOGLEVEL')
+    loglevel = loglevel if loglevel in defaults.POSSIBLE_LOGLEVELS else None
     settings_from_env = {
         'read_host': os.getenv('MINECHAT_READ_HOST'),
         'read_port': read_port,
@@ -70,7 +73,7 @@ def read_from_environment() -> Dict[str, Union[str, int]]:
         'write_host': os.getenv('MINECHAT_WRITE_HOST'),
         'write_port': write_port,
         'token': os.getenv('MINECHAT_TOKEN'),
-        'loglevel': os.getenv('MINECHAT_LOGLEVEL'),
+        'loglevel': loglevel,
     }
     return {k: v for k, v in settings_from_env.items() if v is not None}
 

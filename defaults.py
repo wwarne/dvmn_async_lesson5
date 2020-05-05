@@ -6,3 +6,4 @@ WRITE_PORT = 5050
 HISTORY_PATH = 'minechat.history'
 TOKEN_PATH = 'my-token.txt'
 LOGLEVEL = 'INFO'
+POSSIBLE_LOGLEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR')
