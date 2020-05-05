@@ -8,8 +8,8 @@ import defaults
 def create_parser() -> argparse.ArgumentParser:
     """Creates a parser to process command line arguments."""
     parser = argparse.ArgumentParser('Minechat chat client')
-    parser.add_argument('--loglevel', type=str, choices=('DEBUG', 'INFO', 'WARNING', 'ERROR'), help='Logging level',
-                        required=False)
+    parser.add_argument('--loglevel', type=str, choices=('DEBUG', 'INFO', 'WARNING', 'ERROR'),
+                        help='Logging level', required=False)
     group_reader = parser.add_argument_group('Chat reader settings')
     group_reader.add_argument('--read-host', type=str, help='Chat address')
     group_reader.add_argument('--read-port', type=int, help='Chat port')
@@ -48,6 +48,7 @@ def read_from_parser(
 def read_from_environment() -> Dict[str, Union[str, int]]:
     """
     Read chat settings from environmental variables.
+
     :return: program settings what was set (not null)
     """
     read_port = os.getenv('MINECHAT_READ_PORT')
@@ -74,6 +75,12 @@ def read_from_environment() -> Dict[str, Union[str, int]]:
     return {k: v for k, v in settings_from_env.items() if v is not None}
 
 def read_token_from_file(filepath: str) -> Optional[str]:
+    """
+    Reads a token saved in a file.
+
+    :param filepath: path to a file
+    :return: token or None
+    """
     if os.path.isfile(filepath):
         with open(filepath, 'r', encoding='utf-8') as f:
             return f.readline()
