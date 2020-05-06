@@ -1,6 +1,5 @@
 import asyncio
 import contextlib
-import logging
 import socket
 from asyncio.streams import StreamReader, StreamWriter
 from typing import AsyncGenerator, Tuple, TypeVar, Type
@@ -28,11 +27,7 @@ def sanitize_message(message: str) -> str:
 async def read_line_from_chat(reader: StreamReader) -> str:
     """Grabs bytes string from connection and decode it into text."""
     chat_data = await reader.readline()
-    try:
-        return chat_data.decode(encoding='utf-8').strip()
-    except (SyntaxError, UnicodeDecodeError):
-        logging.error('Got message that can\'t be decoded', exc_info=True)
-        return ''
+    return chat_data.decode(encoding='utf-8').strip()
 
 
 async def write_line_to_chat(writer: StreamWriter, message: str):
