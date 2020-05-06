@@ -52,17 +52,22 @@ async def connect(
         timeout: float = 1.0,
 ) -> AsyncGenerator[Tuple[StreamReader, StreamWriter], None]:
     """Create connection and send status into queue."""
-    await status_update_queue.put(gui_state_class.INITIATED)
     try:
-        async with async_timeout.timeout(timeout):
-            reader, writer = await asyncio.open_connection(host, port)
-    except (asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror):
-        raise ConnectionError
-    await status_update_queue.put(gui_state_class.ESTABLISHED)
-    try:
-        yield reader, writer
+        await status_update_queue.put(gui_state_class.INITIATED)
+
+        try:
+            async with async_timeout.timeout(timeout):
+                reader, writer = await asyncio.open_connection(host, port)
+        except (asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror):
+            raise ConnectionError
+
+        await status_update_queue.put(gui_state_class.ESTABLISHED)
+
+        try:
+            yield reader, writer
+        finally:
+            writer.close()
+            await writer.wait_closed()
     finally:
-        writer.close()
-        await writer.wait_closed()
         await status_update_queue.put(gui_state_class.CLOSED)
         await status_update_queue.put(NicknameReceived('неизвестно'))
