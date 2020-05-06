@@ -12,6 +12,7 @@ async def read_messages(
         history_queue: asyncio.Queue,
         watchdog_queue: asyncio.Queue,
         timeout: float = 1,
+        filter_bot_messages: bool = False,
 ) -> None:
     """Establish connection and read messages from a chat."""
     async with connect(
@@ -26,6 +27,10 @@ async def read_messages(
             if not new_message:
                 # Got an empty message. Usually it happens because of connection problems.
                 continue
+            if filter_bot_messages:
+                name, _ = new_message.split(':', maxsplit=2)
+                if name in ('Vlad', 'Eva'):
+                    continue
             await watchdog_queue.put('New message in chat')
             await messages_queue.put(new_message)
             await history_queue.put(new_message)

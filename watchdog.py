@@ -51,7 +51,9 @@ async def handle_connection(
                                    status_update_queue,
                                    messages_queue,
                                    history_queue,
-                                   watchdog_queue
+                                   watchdog_queue,
+                                   1,
+                                   True,
                                    )
                     await tg.spawn(send_messages,
                                    writer_host,
