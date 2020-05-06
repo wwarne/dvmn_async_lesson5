@@ -67,7 +67,7 @@ async def handle_connection(
                                    watchdog_queue,
                                    2,
                                    )
-            except (SyntaxError, socket.gaierror, UnicodeDecodeError):
+            except (socket.gaierror, UnicodeDecodeError):
                 raise ConnectionError
             except ExceptionGroup as multi_e:
                 for error in multi_e.exceptions:
