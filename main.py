@@ -7,7 +7,7 @@ from anyio import create_task_group
 import gui
 from exceptions import MinechatException
 from gui import TkAppClosed
-from history_client import history_restore, history_save
+from history_client import restore_history, save_history
 from settings import read_settings, get_logging_settings
 from watchdog import handle_connection
 
@@ -32,11 +32,11 @@ async def run_chat_internals(
                        sending_queue,
                        status_updates_queue,
                        )
-        await history_restore(
+        await restore_history(
             path=history_path,
             messages_queue=messages_queue,
         )
-        await tg.spawn(history_save,
+        await tg.spawn(save_history,
                        history_path,
                        history_queue,
                        )
