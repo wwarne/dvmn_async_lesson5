@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 
 import aiofiles
 
@@ -27,7 +28,8 @@ async def save_history(
         async with aiofiles.open(path, mode='a', encoding='utf-8') as f:
             while True:
                 message = await history_queue.get()
-                await f.write(f'{message}\n')
+                current_datetime = datetime.now().strftime('%d.%m.%y %H:%M')
+                await f.write(f'[{current_datetime}] {message}\n')
     except PermissionError:
         raise MinechatException(
             title='Не удаётся открыть файл',
