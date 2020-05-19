@@ -56,11 +56,11 @@ async def run_chat_internals(
 
 def run_chat() -> None:
     """Entry point to initialize and start the application."""
-    total_settings = read_settings()
-    logger_dict_config = get_logging_settings(total_settings['loglevel'])
-    logging.config.dictConfig(logger_dict_config)
-
     try:
+        total_settings = read_settings()
+        logger_dict_config = get_logging_settings(total_settings.loglevel)
+        logging.config.dictConfig(logger_dict_config)
+
         asyncio.run(run_chat_internals(
             reader_host=total_settings.read_host,
             reader_port=total_settings.read_port,

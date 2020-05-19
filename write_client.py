@@ -103,8 +103,6 @@ async def send_messages(
         watchdog_queue: asyncio.Queue,
 ) -> None:
     """Send messages to minechat."""
-    if not access_token:
-        raise MinechatException(title='Не задан токен', message='Зарегистрируйтесь через python register.py или передайте токен в приложение.')
     async with connect(
         host=host,
         port=port,

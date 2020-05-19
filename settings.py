@@ -5,6 +5,7 @@ from typing import Optional, List, Dict, Any
 import configargparse
 
 import defaults
+from exceptions import MinechatException
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -49,6 +50,11 @@ def read_settings(
         parser = create_parser()
     settings = parser.parse_args(args=cmd_params)
     settings.token = settings.token or read_token_from_file(defaults.TOKEN_PATH)
+    if not settings.token:
+        raise MinechatException(
+            title='Не задан токен',
+            message='Зарегистрируйтесь через python register.py или передайте токен в приложение.',
+        )
     return settings
 
 
