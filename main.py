@@ -7,7 +7,7 @@ from anyio import create_task_group
 import gui
 from exceptions import MinechatException
 from gui import TkAppClosed
-from history_client import history_restore, history_save
+from history_client import restore_history, save_history
 from settings import read_settings, get_logging_settings
 from watchdog import handle_connection
 
@@ -32,11 +32,11 @@ async def run_chat_internals(
                        sending_queue,
                        status_updates_queue,
                        )
-        await history_restore(
+        await restore_history(
             path=history_path,
             messages_queue=messages_queue,
         )
-        await tg.spawn(history_save,
+        await tg.spawn(save_history,
                        history_path,
                        history_queue,
                        )
@@ -56,18 +56,18 @@ async def run_chat_internals(
 
 def run_chat() -> None:
     """Entry point to initialize and start the application."""
-    total_settings = read_settings()
-    logger_dict_config = get_logging_settings(total_settings['loglevel'])
-    logging.config.dictConfig(logger_dict_config)
-
     try:
+        total_settings = read_settings()
+        logger_dict_config = get_logging_settings(total_settings.loglevel)
+        logging.config.dictConfig(logger_dict_config)
+
         asyncio.run(run_chat_internals(
-            reader_host=total_settings['read_host'],
-            reader_port=total_settings['read_port'],
-            writer_host=total_settings['write_host'],
-            writer_port=total_settings['write_port'],
-            access_token=total_settings['token'],
-            history_path=total_settings['history_path'],
+            reader_host=total_settings.read_host,
+            reader_port=total_settings.read_port,
+            writer_host=total_settings.write_host,
+            writer_port=total_settings.write_port,
+            access_token=total_settings.token,
+            history_path=total_settings.history_path,
         ))
     except MinechatException as e:
         messagebox.showinfo(title=e.title, message=e.message)

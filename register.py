@@ -81,9 +81,8 @@ async def watch_register(
                     reader=reader,
                     writer=writer,
                     nickname=nickname,
-                    log_queue=log_queue,
                 )
-        except (ConnectionError, MinechatException) as e:
+        except (ConnectionError, UnicodeDecodeError, MinechatException) as e:
             await log_queue.put(('Не удалось зарегистрироваться. Пожалуйста, попробуйте позднее.', 'ERROR'))
         else:
             result_token_field.delete(0, tk.END)
@@ -160,8 +159,7 @@ async def main() -> None:
     events_queue = asyncio.Queue()
     log_queue = asyncio.Queue()
     try:
-        async with create_task_group() as nursery:
-            await nursery.spawn(draw, events_queue, log_queue)
+        await draw(events_queue, log_queue)
     except TkAppClosed:
         pass
 

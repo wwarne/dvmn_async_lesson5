@@ -1,6 +1,5 @@
 import asyncio
 import contextlib
-import logging
 import socket
 from asyncio.streams import StreamReader, StreamWriter
 from typing import AsyncGenerator, Tuple, TypeVar, Type
@@ -28,11 +27,7 @@ def sanitize_message(message: str) -> str:
 async def read_line_from_chat(reader: StreamReader) -> str:
     """Grabs bytes string from connection and decode it into text."""
     chat_data = await reader.readline()
-    try:
-        return chat_data.decode(encoding='utf-8').strip()
-    except (SyntaxError, UnicodeDecodeError):
-        logging.error('Got message that can\'t be decoded', exc_info=True)
-        return ''
+    return chat_data.decode(encoding='utf-8').strip()
 
 
 async def write_line_to_chat(writer: StreamWriter, message: str):
@@ -52,17 +47,22 @@ async def connect(
         timeout: float = 1.0,
 ) -> AsyncGenerator[Tuple[StreamReader, StreamWriter], None]:
     """Create connection and send status into queue."""
-    await status_update_queue.put(gui_state_class.INITIATED)
     try:
-        async with async_timeout.timeout(timeout):
-            reader, writer = await asyncio.open_connection(host, port)
-    except (asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror):
-        raise ConnectionError
-    await status_update_queue.put(gui_state_class.ESTABLISHED)
-    try:
-        yield reader, writer
+        await status_update_queue.put(gui_state_class.INITIATED)
+
+        try:
+            async with async_timeout.timeout(timeout):
+                reader, writer = await asyncio.open_connection(host, port)
+        except (asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror):
+            raise ConnectionError
+
+        await status_update_queue.put(gui_state_class.ESTABLISHED)
+
+        try:
+            yield reader, writer
+        finally:
+            writer.close()
+            await writer.wait_closed()
     finally:
-        writer.close()
-        await writer.wait_closed()
         await status_update_queue.put(gui_state_class.CLOSED)
         await status_update_queue.put(NicknameReceived('неизвестно'))
