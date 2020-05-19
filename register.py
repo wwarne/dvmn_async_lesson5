@@ -159,8 +159,7 @@ async def main() -> None:
     events_queue = asyncio.Queue()
     log_queue = asyncio.Queue()
     try:
-        async with create_task_group() as nursery:
-            await nursery.spawn(draw, events_queue, log_queue)
+        await draw(events_queue, log_queue)
     except TkAppClosed:
         pass
 
