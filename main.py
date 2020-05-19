@@ -62,12 +62,12 @@ def run_chat() -> None:
 
     try:
         asyncio.run(run_chat_internals(
-            reader_host=total_settings['read_host'],
-            reader_port=total_settings['read_port'],
-            writer_host=total_settings['write_host'],
-            writer_port=total_settings['write_port'],
-            access_token=total_settings['token'],
-            history_path=total_settings['history_path'],
+            reader_host=total_settings.read_host,
+            reader_port=total_settings.read_port,
+            writer_host=total_settings.write_host,
+            writer_port=total_settings.write_port,
+            access_token=total_settings.token,
+            history_path=total_settings.history_path,
         ))
     except MinechatException as e:
         messagebox.showinfo(title=e.title, message=e.message)
