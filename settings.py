@@ -31,7 +31,7 @@ def read_token_from_file(filepath: str) -> Optional[str]:
     """
     if os.path.isfile(filepath):
         with open(filepath, 'r', encoding='utf-8') as f:
-            return f.readline()
+            return f.readline().strip()
     return None
 
 
